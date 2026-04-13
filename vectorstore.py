@@ -16,10 +16,10 @@ embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
 def load_documents():
     """Loads all PDFs from the documents/ folder and returns a list of pages."""
-    path = r"D:\WORKSPACE VSC\TIROCINIO\Study Assistant Agent\documents"
+    path = path = os.path.join(os.path.dirname(__file__), "documents")
     if not os.path.exists(path):
         os.makedirs(path)
-        print("Cartella documents creata, inserire i PDF all'interno!")
+        print("Folder 'documents' created, please insert PDFs inside!")
         return []
     
     all_pages = []
@@ -56,12 +56,12 @@ def create_vectorstore():
     docs = load_documents()
 
     if not docs:
-        print("Nessun documento trovato!")
+        print("No documents found!")
         return None
 
     pages_split = text_splitter.split_documents(docs)
     
-    persist_directory = r"D:\WORKSPACE VSC\TIROCINIO\Study Assistant Agent\chroma_db"
+    persist_directory = os.path.join(os.path.dirname(__file__), "chroma_db")
     collection_name = "study_materials"
     
     if not os.path.exists(persist_directory):
@@ -86,7 +86,7 @@ def get_retriever():
     vectorstore = create_vectorstore()
     
     if vectorstore is None:
-        print("Impossibile creare il retriever!")
+        print("Unable to create retriever!")
         return None
     
     retriever = vectorstore.as_retriever(
