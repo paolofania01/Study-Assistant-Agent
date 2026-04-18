@@ -9,7 +9,8 @@ from state import AgentState
 from tools import retriever_tool, flashcard_generator, quiz_generator
 
 # model = ChatOllama(model="llama3.1:8b", temperature=0)
-model = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+# model = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+model = ChatOllama(model="qwen2.5:7b", temperature=0)
 
 tools = [retriever_tool, flashcard_generator, quiz_generator]
 
@@ -36,13 +37,14 @@ system_prompt = """
         Respond in a clear, guided, and educational way. Encourage reasoning and avoid immediately giving full solutions when possible.
 
     - FLASHCARD mode:
-        Use this when the user wants to memorize concepts, definitions, or key information.
-        Generate concise flashcards in a question/answer format, focusing on essential ideas.
+        Use flashcard_generator ONCE per user request.
+        When the tool returns flashcards, display them to the user and STOP.
+        Do NOT call flashcard_generator multiple times for the same request.
 
     - QUIZ mode:
-        Use this when the user wants to test their knowledge.
-        Generate quizzes (preferably multiple-choice or short answer).
-        Do NOT provide the correct answer immediately unless the user explicitly asks for it.
+        Use quiz_generator ONCE per user request.
+        When the tool returns quiz questions, display them to the user and STOP.
+        Do NOT call quiz_generator multiple times for the same request.
 
     Important rules:
 

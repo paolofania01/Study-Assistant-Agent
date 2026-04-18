@@ -6,7 +6,11 @@ chroma_db/
  
 # PDF documents (user-specific)
 documents/*.pdf
- 
+
+# Generated content (user-specific)
+flashcards/
+quizzes/ 
+
 # Python
 __pycache__/
 *.pyc

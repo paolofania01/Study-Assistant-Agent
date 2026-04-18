@@ -60,9 +60,16 @@ def studing_agent():
             "study_history": study_history,
             "current_mode": "chat"
         })
-
-        # Track the topic for study history
-        study_history["topics_covered"].append(user_input[:50])
+        
+        for msg in result["messages"]:
+            if hasattr(msg, "tool_calls") and msg.tool_calls:
+                for tc in msg.tool_calls:
+                # If the tool call has a 'query' or 'topic' argument, we consider it a new topic covered and add it to the study history.
+                    topic = tc['args'].get('query') or tc['args'].get('topic')
+                    if topic and topic not in study_history["topics_covered"]:
+                        study_history["topics_covered"].append(topic)
+                        print(f"\n[Study History Updated] Topics Covered: {study_history['topics_covered']}")
+                        
         
         print("\n=== ANSWER ===")
         print(result['messages'][-1].content)
