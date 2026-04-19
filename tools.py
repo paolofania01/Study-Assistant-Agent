@@ -153,19 +153,14 @@ def retriever_tool(query: str, state: Annotated[dict, InjectedState]) -> str:
     """Searches the study documents for relevant information. 
     Use this tool to answer questions about the study material."""
     
-    print(f"\n[DEBUG] retriever_tool chiamato con query: '{query}'")
-    
     docs = retriever.invoke(query)
-    
-    print(f"[DEBUG] Trovati {len(docs)} chunk")
-    for i, doc in enumerate(docs):
-        source = doc.metadata.get("source_file", "unknown")
-        print(f"[DEBUG] Chunk {i+1} (da {source}): {doc.page_content[:150]}...")
     
     if not docs:
         return "I found no relevant information in the documents about the study material"
 
     results = []
+    
+    # Format each chunk with its source file for traceability
     for i, doc in enumerate(docs):
         source = doc.metadata.get("source_file", "unknown")
         results.append(f"[Source: {source}] Document {i+1}:\n{doc.page_content}")
