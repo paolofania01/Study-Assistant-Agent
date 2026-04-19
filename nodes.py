@@ -9,8 +9,8 @@ from state import AgentState
 from tools import retriever_tool, flashcard_generator, quiz_generator
 
 # model = ChatOllama(model="llama3.1:8b", temperature=0)
-# model = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
-model = ChatOllama(model="qwen2.5:7b", temperature=0)
+model = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+# model = ChatOllama(model="qwen2.5:7b", temperature=0)
 
 tools = [retriever_tool, flashcard_generator, quiz_generator]
 
@@ -33,8 +33,11 @@ system_prompt = """
     Guidelines:
 
     - CHAT mode:
-        Use this when the user asks questions, requests explanations, or needs help understanding concepts.
-        Respond in a clear, guided, and educational way. Encourage reasoning and avoid immediately giving full solutions when possible.
+        RULE: You MUST call retriever_tool for EVERY user question, no exceptions.
+        NEVER answer from your own knowledge.
+        NEVER answer based on what you remember.
+        ALWAYS call retriever_tool first, then use ONLY the retrieved context to answer.
+        If the retrieved context does not contain the answer, reply: "Non ho trovato informazioni nei documenti su questo argomento."
 
     - FLASHCARD mode:
         Use flashcard_generator ONCE per user request.

@@ -75,4 +75,5 @@ def studing_agent():
         print(result['messages'][-1].content)
 
 
-studing_agent()
+if __name__ == "__main__":
+    studing_agent()

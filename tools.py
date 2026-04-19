@@ -15,9 +15,9 @@ from langchain_groq import ChatGroq
 retriever = get_retriever()
 
 
-# flashcard_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+generation_llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 # generation_llm = ChatOllama(model="llama3.1:8b", temperature=0)
-generation_llm = ChatOllama(model="qwen2.5:7b", temperature=0)
+# generation_llm = ChatOllama(model="qwen2.5:7b", temperature=0)
 
 # We save all flashcards in a single JSON file for simplicity. Each flashcard has a "question" and "answer" field.
 FLASHCARDS_FILE = "flashcards/flashcards.json"
@@ -153,14 +153,19 @@ def retriever_tool(query: str, state: Annotated[dict, InjectedState]) -> str:
     """Searches the study documents for relevant information. 
     Use this tool to answer questions about the study material."""
     
+    print(f"\n[DEBUG] retriever_tool chiamato con query: '{query}'")
+    
     docs = retriever.invoke(query)
+    
+    print(f"[DEBUG] Trovati {len(docs)} chunk")
+    for i, doc in enumerate(docs):
+        source = doc.metadata.get("source_file", "unknown")
+        print(f"[DEBUG] Chunk {i+1} (da {source}): {doc.page_content[:150]}...")
     
     if not docs:
         return "I found no relevant information in the documents about the study material"
 
     results = []
-    
-    # Format each chunk with its source file for traceability
     for i, doc in enumerate(docs):
         source = doc.metadata.get("source_file", "unknown")
         results.append(f"[Source: {source}] Document {i+1}:\n{doc.page_content}")

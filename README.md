@@ -1,14 +1,16 @@
 # Study Assistant Agent
 
-An AI-powered study assistant that reads your PDFs and helps you learn through three modes: chat, flashcards, and quizzes. Built with LangGraph and RAG (Retrieval-Augmented Generation).
+An AI-powered study assistant that reads your PDFs and helps you learn through three modes: chat, flashcards, and quizzes. Available both as a terminal application and a Telegram bot. Built with LangGraph and RAG (Retrieval-Augmented Generation).
 
 > **Note:** This is a first version of the project. Features and improvements will be added over time.
 
 ## Features
 
 - **Chat** — Ask questions about your study material and get explanations based on the documents
-- **Flashcard** — Generate Q&A flashcards on any topic from your PDFs (saved persistently)
-- **Quiz** — Create multiple-choice quizzes to test your knowledge (saved persistently)
+- **Flashcard** — Generate Q&A flashcards on any topic, automatically saved for later review
+- **Quiz** — Create multiple-choice quizzes to test your knowledge, saved persistently
+- **Telegram Bot** — Access the assistant from your phone via Telegram (chat mode)
+- **Study History Tracking** — Automatically tracks covered topics to avoid repetition
 
 ## Tech Stack
 
@@ -17,6 +19,7 @@ An AI-powered study assistant that reads your PDFs and helps you learn through t
 - **Groq API** — LLM inference (Llama 3.3 70B)
 - **Ollama** — Local embeddings (nomic-embed-text) and optional local LLM
 - **ChromaDB** — Vector store for document retrieval
+- **python-telegram-bot** — Telegram bot interface
 
 ## Model Options
 
@@ -30,7 +33,8 @@ For the best experience, use Groq. Ollama is a good fallback when you hit Groq's
 ## Project Structure
 
 ```
-├── main.py            # Entry point — graph construction and conversation loop
+├── main.py            # Terminal entry point — graph construction and conversation loop
+├── telegram_bot.py    # Telegram bot interface
 ├── state.py           # State definitions (AgentState, StudyHistory)
 ├── tools.py           # Tool definitions with InjectedState
 ├── nodes.py           # Graph nodes (router, LLM caller, continuation check)
@@ -67,24 +71,45 @@ ollama pull nomic-embed-text
    ollama pull qwen2.5:7b
    ```
 
-4. Add your PDFs to the `documents/` folder and run:
+4. Add your PDFs to the `documents/` folder.
+
+## Usage
+
+### Terminal Mode
+
+Run the agent in terminal:
 ```bash
 python main.py
 ```
 
-## Usage Examples
-
+Example commands:
 ```
-What is your question: Explain the concept of virtual memory
+What is your question: Explain virtual memory
 What is your question: Create flashcards on scheduling algorithms
 What is your question: Quiz me on disk management
 ```
 
 Type `exit` or `quit` to end the session.
 
+### Telegram Bot Mode
+
+1. Create a bot on Telegram via [@BotFather](https://t.me/BotFather) and get your token
+2. Add it to your `.env`:
+   ```
+   TELEGRAM_BOT_TOKEN=your_token_here
+   ```
+3. Run the bot:
+   ```bash
+   python telegram_bot.py
+   ```
+4. Open Telegram, search for your bot, and start chatting!
+
+Currently, the Telegram bot supports chat mode only. Flashcard and quiz modes are available in terminal mode.
+
 ## Planned Improvements
 
+- Flashcard and quiz modes on Telegram
 - Interactive quiz verification with score tracking
-- Persistent study history across sessions
-- Telegram bot integration
+- PDF upload via Telegram
+- Multi-user support with isolated documents
 - Web interface with Streamlit
